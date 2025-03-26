@@ -6,10 +6,12 @@ function App() {
   const [info, setInfo] = useState([]);
   const [details, setDetails] = useState({});
   const [id, setId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
+      setIsLoading(true)
+      try { 
         const response = await fetch(
           `https://raw.githubusercontent.com/netology-code/ra16-homeworks/master/hooks-context/use-effect/data/users.json`
         );
@@ -20,6 +22,8 @@ function App() {
         setInfo(list);
       } catch (e) {
         console.error(e);
+      } finally {
+        setIsLoading(false)
       }
     };
     fetchData();
@@ -28,6 +32,7 @@ function App() {
   useEffect(() => {
     if (id === null) return;
     const fetchData = async () => {
+      setIsLoading(true)
       try {
         const response = await fetch(
           `https://raw.githubusercontent.com/netology-code/ra16-homeworks/master/hooks-context/use-effect/data/${id}.json`
@@ -39,16 +44,21 @@ function App() {
         setDetails(detail);
       } catch (e) {
         console.error(e);
+      } finally {
+        setIsLoading(false)
       }
     };
     fetchData();
   }, [id]);
 
   return (
+    <>
+    {isLoading && <div className="wrapper-loading"><div className="loading">...Loading...</div></div>}
     <div className="container">
       <List info={info} setId={setId} />
       <Details details={details} />
     </div>
+    </>
   );
 }
 
